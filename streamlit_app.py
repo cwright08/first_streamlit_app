@@ -37,13 +37,14 @@ fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_cho
 fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 # Display normalized data in dataframe?
 streamlit.dataframe(fruityvice_normalized)
+streamlit.stop()
 
 ##Query SF
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
 my_cur.execute("SELECT * FROM FRUIT_LOAD_LIST")
 my_data_rows = my_cur.fetchall()
-streamlit.header("The friut load list contains:")
+streamlit.header("The fruit load list contains:")
 streamlit.dataframe(my_data_rows)
 
 
