@@ -49,16 +49,23 @@ except URLError as e:
 # fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 # # Display normalized data in dataframe?
 # streamlit.dataframe(fruityvice_normalized)
-streamlit.stop()
+
 
 ##Query SF
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-my_cur = my_cnx.cursor()
-my_cur.execute("SELECT * FROM FRUIT_LOAD_LIST")
-my_data_rows = my_cur.fetchall()
 streamlit.header("The fruit load list contains:")
-streamlit.dataframe(my_data_rows)
+def get_fruit_load_list():
+    with my_cnx.cursor() as my_cur:
+        my_cur.execute("SELECT * FROM FRUIT_LOAD_LIST")
+        return my_cur.fetchall()
 
+
+#Button
+if streamlit.button('Get Fruit Load List'):
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_rows =get_fruit_load_list()
+    streamlit.dataframe(my_data_rows)
+
+streamlit.stop()
 
 add_my_fruit = streamlit.text_input('Whhat fruit would you like to add?','Kiwi')
 streamlit.write('Thanks for adding ', add_my_fruit)
